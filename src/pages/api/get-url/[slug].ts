@@ -1,7 +1,7 @@
-import { NextApiRequest, NextApiResponse } from "next";
-import { prisma } from "../../db/client";
+import { NextApiHandler } from "next";
+import { prisma } from "../../../db/client";
 
-export const getLink = async (req: NextApiRequest, res: NextApiResponse) => {
+export const getLink: NextApiHandler = async (req, res) => {
     const slug = req.query["slug"];
 
     if (!slug || typeof slug !== "string") {
@@ -20,7 +20,7 @@ export const getLink = async (req: NextApiRequest, res: NextApiResponse) => {
         return res.status(404).json({ message: "slug not found" });
     }
 
-    res.redirect(data.url!);
+    res.json(data);
 };
 
 export default getLink;
