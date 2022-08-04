@@ -5,6 +5,7 @@ export const middleware = async (req: NextRequest, ev: NextFetchEvent) => {
     if (req.nextUrl.pathname?.startsWith("/api/get-url/")) return;
 
     const slug = req.nextUrl.pathname.split("/").pop();
+    console.log(`SLUG: ${slug}`);
     if (!slug) return;
 
     const data = await (
