@@ -6,6 +6,10 @@ type Url = {
     url: string
 }
 
+type ReqError = {
+    error: string
+}
+
 const CreateLink: NextPage = () => {
   const [longUrl, setLongUrl] = useState('');
   const [shortUrl, setShortUrl] = useState('');
@@ -15,15 +19,25 @@ const CreateLink: NextPage = () => {
   }
 
   const handleGenerateShortLink = async () => {
+    if (!longUrl.trim()) {
+        toast.error('Please enter a URL');
+        return;
+    }
+
     const resp = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/create-url`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ url: longUrl })
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ url: longUrl })
     })
-    const data = await resp.json() as Url;
-    setShortUrl(data.url);
+    if (resp.status === 201) {
+        const data = await resp.json() as Url;
+        setShortUrl(data.url);
+    } else {
+        const error = await resp.json() as ReqError;
+        toast.error(error.error);
+    }
   }
 
   const handleCopyLink = () => {
